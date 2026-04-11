@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OGC/OCH — Gamification Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:       #0d0f14;
+  --bg2:      #141720;
+  --bg3:      #1c2030;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.13);
+  --txt:      #e8eaf0;
+  --txt2:     #8b92a8;
+  --txt3:     #555d72;
+  --gold:     #f5c842;
+  --gold2:    #c9960a;
+  --teal:     #2dd4a0;
+  --teal2:    #0d9a70;
+  --purple:   #8b7cf8;
+  --coral:    #f07060;
+  --blue:     #5b9cf6;
+  --green:    #4ade80;
+  --amber:    #fbbf24;
+  --red:      #f87171;
+  --radius:   12px;
+  --radius-sm:8px;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── SETUP OVERLAY ─────────────────────────────────────────────────────── */
+#setup-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem;
+}
+.setup-card {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 2.5rem;
+  max-width: 680px;
+  width: 100%;
+}
+.setup-logo {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 2rem;
+}
+.setup-logo-mark {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace; font-weight: 700; font-size: 16px; color: #000;
+}
+.setup-logo-text { font-size: 18px; font-weight: 700; color: var(--txt); }
+.setup-logo-sub  { font-size: 12px; color: var(--txt2); margin-top: 1px; }
+.setup-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.setup-desc  { color: var(--txt2); font-size: 14px; margin-bottom: 2rem; line-height: 1.7; }
+
+.step { margin-bottom: 1.25rem; }
+.step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--gold); color: #000; font-size: 11px; font-weight: 700;
+  margin-right: 8px; flex-shrink: 0;
+}
+.step-row { display: flex; align-items: flex-start; gap: 0; margin-bottom: 6px; }
+.step-label { font-size: 13px; font-weight: 600; color: var(--txt); }
+.step-hint  { font-size: 12px; color: var(--txt2); margin-left: 30px; }
+.step code {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 4px; padding: 1px 6px;
+  font-family: 'Space Mono', monospace; font-size: 11px; color: var(--teal);
+}
+
+.url-input-row { display: flex; gap: 8px; margin-top: 6px; margin-left: 30px; }
+.url-input {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 9px 12px;
+  color: var(--txt); font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px;
+  outline: none; transition: border-color .2s;
+}
+.url-input:focus { border-color: var(--gold); }
+.url-input::placeholder { color: var(--txt3); }
+
+.sheet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 1.5rem; }
+.sheet-row { display: flex; flex-direction: column; gap: 4px; }
+.sheet-name-label { font-size: 11px; font-weight: 600; color: var(--txt2); }
+
+.btn-load {
+  width: 100%; margin-top: 1.5rem; padding: 13px;
+  background: var(--gold); color: #000;
+  border: none; border-radius: var(--radius-sm);
+  font-family: 'Be Vietnam Pro', sans-serif; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: opacity .2s, transform .1s;
+}
+.btn-load:hover   { opacity: .9; }
+.btn-load:active  { transform: scale(.98); }
+.btn-demo {
+  width: 100%; margin-top: 8px; padding: 11px;
+  background: transparent; color: var(--txt2);
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all .2s;
+}
+.btn-demo:hover { border-color: var(--border2); color: var(--txt); background: var(--bg3); }
+
+/* ── MAIN LAYOUT ───────────────────────────────────────────────────────── */
+#app { display: none; min-height: 100vh; }
+
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 220px;
+  background: var(--bg2); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; z-index: 50;
+  padding: 1.5rem 0;
+}
+.sidebar-logo {
+  padding: 0 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.logo-mark {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; color: #000;
+  margin-bottom: 8px;
+}
+.logo-name { font-size: 15px; font-weight: 700; }
+.logo-sub  { font-size: 11px; color: var(--txt2); }
+
+.nav { flex: 1; padding: 1rem 0; }
+.nav-section { font-size: 10px; font-weight: 700; color: var(--txt3); letter-spacing: .1em; text-transform: uppercase; padding: 0 1.25rem; margin: 1rem 0 .4rem; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 1.25rem; cursor: pointer;
+  color: var(--txt2); font-size: 13px; font-weight: 500;
+  transition: all .15s; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--txt); background: rgba(255,255,255,0.03); }
+.nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(245,200,66,0.06); }
+.nav-icon { width: 16px; height: 16px; opacity: .7; flex-shrink: 0; }
+.nav-item.active .nav-icon { opacity: 1; }
+
+.sync-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--txt3);
+}
+.sync-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); margin-right: 5px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.main { margin-left: 220px; padding: 2rem; min-height: 100vh; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+.page-header { margin-bottom: 2rem; }
+.page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.page-sub { color: var(--txt2); font-size: 13px; }
+
+/* ── COMPONENTS ────────────────────────────────────────────────────────── */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+  position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--accent-color, transparent) 0%, transparent 60%);
+  opacity: .06; pointer-events: none;
+}
+.stat-label { font-size: 11px; font-weight: 600; color: var(--txt2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.stat-val   { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.stat-sub   { font-size: 12px; color: var(--txt3); }
+.stat-trend { font-size: 11px; font-weight: 600; margin-top: 6px; }
+.trend-up   { color: var(--teal); }
+.trend-dn   { color: var(--coral); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+
+.card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+}
+.card-title { font-size: 13px; font-weight: 700; color: var(--txt); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+.card-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: var(--bg3); color: var(--txt2); }
+
+/* Table */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th { font-size: 10px; font-weight: 700; color: var(--txt3); text-transform: uppercase; letter-spacing: .07em; padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+.tbl td { padding: 10px 10px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--txt); vertical-align: middle; }
+.tbl tr:hover td { background: rgba(255,255,255,0.02); }
+.tbl tr:last-child td { border-bottom: none; }
+
+/* Rank badge */
+.rank { width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 12px; }
+.rank-1 { background: rgba(245,200,66,.15); color: var(--gold); }
+.rank-2 { background: rgba(180,180,200,.12); color: #b0b8cc; }
+.rank-3 { background: rgba(205,127,50,.15); color: #c8825a; }
+.rank-n { background: var(--bg3); color: var(--txt3); }
+
+/* Score bar */
+.score-bar { display: flex; align-items: center; gap: 8px; }
+.score-track { flex: 1; height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.score-fill  { height: 100%; border-radius: 2px; transition: width .6s ease; }
+.score-num   { font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; min-width: 40px; text-align: right; }
+
+/* Pills */
+.pill { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.pill-gold    { background: rgba(245,200,66,.12); color: var(--gold); }
+.pill-silver  { background: rgba(180,190,210,.10); color: #a8b2c8; }
+.pill-bronze  { background: rgba(180,120,80,.12); color: #c8906a; }
+.pill-teal    { background: rgba(45,212,160,.10); color: var(--teal); }
+.pill-purple  { background: rgba(139,124,248,.12); color: var(--purple); }
+.pill-coral   { background: rgba(240,112,96,.12); color: var(--coral); }
+.pill-blue    { background: rgba(91,156,246,.12); color: var(--blue); }
+.pill-amber   { background: rgba(251,191,36,.12); color: var(--amber); }
+.pill-green   { background: rgba(74,222,128,.12); color: var(--green); }
+
+/* Branch indicators */
+.branch-dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+
+/* Catalog item */
+.catalog-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.catalog-item:last-child { border-bottom: none; }
+.catalog-left  { display: flex; align-items: center; gap: 10px; }
+.catalog-cat   { width: 6px; height: 32px; border-radius: 3px; flex-shrink: 0; }
+.catalog-name  { font-size: 13px; font-weight: 600; color: var(--txt); }
+.catalog-sub   { font-size: 11px; color: var(--txt2); margin-top: 1px; }
+.catalog-pts   { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--purple); }
+.catalog-stock { font-size: 11px; color: var(--txt3); margin-top: 2px; text-align: right; }
+.stock-low  { color: var(--coral); }
+.stock-ok   { color: var(--teal); }
+
+/* Progress ring */
+.ring-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.ring-label { position: absolute; text-align: center; }
+.ring-val { font-size: 20px; font-weight: 800; font-family: 'Space Mono', monospace; }
+.ring-sub { font-size: 10px; color: var(--txt2); }
+
+/* Loader */
+.loader { display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 13px; padding: 2rem 0; }
+.spin { width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px; }
+.tab { flex: 1; text-align: center; padding: 7px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--txt2); transition: all .15s; }
+.tab.active { background: var(--bg3); color: var(--txt); }
+
+/* Filter bar */
+.filter-bar { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+.filter-btn {
+  padding: 5px 12px; border-radius: 20px;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--txt2); font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all .15s; font-family: 'Be Vietnam Pro', sans-serif;
+}
+.filter-btn:hover  { border-color: var(--gold); color: var(--gold); }
+.filter-btn.active { background: rgba(245,200,66,.1); border-color: var(--gold); color: var(--gold); }
+
+/* Refresh btn */
+.btn-refresh {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--txt2); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all .15s; font-family: 'Be Vietnam Pro', sans-serif;
+}
+.btn-refresh:hover { border-color: var(--teal); color: var(--teal); }
+.btn-refresh svg { width: 13px; height: 13px; }
+
+/* Empty state */
+.empty { text-align: center; padding: 3rem; color: var(--txt3); font-size: 13px; }
+.empty-icon { font-size: 32px; margin-bottom: .75rem; opacity: .4; }
+
+/* Alert */
+.alert { background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.2); border-radius: var(--radius-sm); padding: .75rem 1rem; font-size: 13px; color: var(--coral); margin-bottom: 1rem; }
+
+canvas { max-height: 220px; }
+</style>
+</head>
+<body>
+
+<!-- SETUP OVERLAY -->
+<div id="setup-overlay">
+  <div class="setup-card">
+    <div class="setup-logo">
+      <div class="setup-logo-mark">OG</div>
+      <div>
+        <div class="setup-logo-text">OGC/OCH Dashboard</div>
+        <div class="setup-logo-sub">Gamification — Hệ thống thi đua nội bộ</div>
+      </div>
+    </div>
+
+    <div class="setup-title">Kết nối Google Sheets</div>
+    <div class="setup-desc">
+      Dashboard sẽ đọc dữ liệu trực tiếp từ Google Sheets của bạn qua CSV public URL.
+      Làm theo 3 bước dưới đây để kết nối, hoặc nhấn <strong style="color:var(--txt)">Dùng dữ liệu demo</strong> để xem trước.
+    </div>
+
+    <div class="step">
+      <div class="step-row"><span class="step-num">1</span><span class="step-label">Publish file Google Sheets thành CSV</span></div>
+      <div class="step-hint">Mở file → <code>File</code> → <code>Share</code> → <code>Publish to web</code> → chọn từng sheet → format <code>CSV</code> → <code>Publish</code>. Lấy link dạng:<br><code>https://docs.google.com/spreadsheets/d/SHEET_ID/gviz/tq?tqx=out:csv&sheet=TÊN_SHEET</code></div>
+    </div>
+
+    <div class="step">
+      <div class="step-row"><span class="step-num">2</span><span class="step-label">Dán Sheet ID vào ô bên dưới</span></div>
+      <div class="step-hint">Sheet ID là chuỗi ký tự dài trong URL của file. Ví dụ: <code>1lYyc44bzIWpnt7oCXzTiqJk5scB9lsAE</code></div>
+      <div class="url-input-row" style="margin-top:8px">
+        <input class="url-input" id="sheet-id" placeholder="Dán Sheet ID tại đây..." value="1lYyc44bzIWpnt7oCXzTiqJk5scB9lsAE">
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-row"><span class="step-num">3</span><span class="step-label">Xác nhận tên các sheet (đúng như trong file)</span></div>
+      <div class="sheet-grid">
+        <div class="sheet-row">
+          <span class="sheet-name-label">Sheet dữ liệu ca</span>
+          <input class="url-input" id="s-data" placeholder="_DATA_CA" value="_DATA_CA">
+        </div>
+        <div class="sheet-row">
+          <span class="sheet-name-label">Sheet điểm tuần</span>
+          <input class="url-input" id="s-week" placeholder="ĐIỂM_TUẦN" value="ĐIỂM_TUẦN">
+        </div>
+        <div class="sheet-row">
+          <span class="sheet-name-label">Sheet leaderboard</span>
+          <input class="url-input" id="s-lb" placeholder="LEADERBOARD" value="LEADERBOARD">
+        </div>
+        <div class="sheet-row">
+          <span class="sheet-name-label">Sheet sự vụ</span>
+          <input class="url-input" id="s-sv" placeholder="ĐIỂM_SỰ_VỤ" value="ĐIỂM_SỰ_VỤ">
+        </div>
+        <div class="sheet-row">
+          <span class="sheet-name-label">Sheet tổng tháng</span>
+          <input class="url-input" id="s-sum" placeholder="_SUMMARY_THÁNG" value="_SUMMARY_THÁNG">
+        </div>
+        <div class="sheet-row">
+          <span class="sheet-name-label">Sheet catalog quà</span>
+          <input class="url-input" id="s-cat" placeholder="CATALOG_ĐỔI_THƯỞNG" value="CATALOG_ĐỔI_THƯỞNG">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-load" onclick="connectSheets()">Kết nối & tải dữ liệu</button>
+    <button class="btn-demo" onclick="loadDemo()">Dùng dữ liệu demo để xem trước</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">OG</div>
+      <div class="logo-name">OGC / OCH</div>
+      <div class="logo-sub">Gamification Dashboard</div>
+    </div>
+    <div class="nav">
+      <div class="nav-section">Tổng quan</div>
+      <div class="nav-item active" onclick="showPage('overview',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+        Overview
+      </div>
+      <div class="nav-section">Thi đua</div>
+      <div class="nav-item" onclick="showPage('leaderboard',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l1.5 3.5L13 5l-2.5 2.5.6 3.5L8 9.5 4.9 11l.6-3.5L3 5l3.5-.5z"/></svg>
+        Leaderboard
+      </div>
+      <div class="nav-item" onclick="showPage('weekly',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>
+        Điểm tuần
+      </div>
+      <div class="nav-item" onclick="showPage('special',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+        Điểm sự vụ
+      </div>
+      <div class="nav-section">Thưởng</div>
+      <div class="nav-item" onclick="showPage('catalog',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12l-1 8H3z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>
+        Catalog đổi quà
+      </div>
+      <div class="nav-section">Cài đặt</div>
+      <div class="nav-item" onclick="showPage('settings',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14"/></svg>
+        Nguồn dữ liệu
+      </div>
+    </div>
+    <div class="sync-footer">
+      <span class="sync-dot"></span>
+      <span id="sync-time">Chưa đồng bộ</span>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- OVERVIEW -->
+    <div id="page-overview" class="page active">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div class="page-title">Tổng quan chương trình</div>
+          <div class="page-sub" id="overview-period">Đang tải...</div>
+        </div>
+        <button class="btn-refresh" onclick="refreshAll()">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7a6 6 0 106-6H5M5 1L3 3l2 2"/></svg>
+          Làm mới
+        </button>
+      </div>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card" style="--accent-color:var(--teal)">
+          <div class="stat-label">Nhân viên tham gia</div>
+          <div class="stat-val" style="color:var(--teal)" id="s-total-nv">—</div>
+          <div class="stat-sub">Toàn chuỗi 6 chi nhánh</div>
+        </div>
+        <div class="stat-card" style="--accent-color:var(--gold)">
+          <div class="stat-label">Điểm cao nhất tuần</div>
+          <div class="stat-val" style="color:var(--gold)" id="s-top-pts">—</div>
+          <div class="stat-sub" id="s-top-name">—</div>
+        </div>
+        <div class="stat-card" style="--accent-color:var(--purple)">
+          <div class="stat-label">Điểm sự vụ đã duyệt</div>
+          <div class="stat-val" style="color:var(--purple)" id="s-sv-pts">—</div>
+          <div class="stat-sub" id="s-sv-count">— hành động ghi nhận</div>
+        </div>
+        <div class="stat-card" style="--accent-color:var(--coral)">
+          <div class="stat-label">Quà còn lại trong kho</div>
+          <div class="stat-val" style="color:var(--coral)" id="s-catalog-left">—</div>
+          <div class="stat-sub" id="s-catalog-val">— loại / —tr VND</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Điểm trung bình theo chi nhánh <span class="card-badge">Tuần này</span></div>
+          <canvas id="chart-branch"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">Phân bổ hạng nhân viên <span class="card-badge">Tháng</span></div>
+          <canvas id="chart-rank"></canvas>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Top 5 nhân viên <span class="card-badge" style="color:var(--gold)">Leaderboard</span></div>
+          <table class="tbl" id="top5-tbl">
+            <thead><tr><th>#</th><th>Nhân viên</th><th>Chi nhánh</th><th>Điểm</th></tr></thead>
+            <tbody id="top5-body"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Điểm sự vụ gần đây <span class="card-badge" style="color:var(--purple)">Mới nhất</span></div>
+          <div id="sv-recent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="page-leaderboard" class="page">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div><div class="page-title">Leaderboard</div><div class="page-sub">Bảng xếp hạng toàn chuỗi</div></div>
+        <button class="btn-refresh" onclick="refreshAll()"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7a6 6 0 106-6H5M5 1L3 3l2 2"/></svg>Làm mới</button>
+      </div>
+      <div class="filter-bar" id="lb-filters"></div>
+      <div class="card">
+        <table class="tbl">
+          <thead><tr><th style="width:50px">#</th><th>Nhân viên</th><th>Chi nhánh</th><th>Cấp bậc</th><th>Tổng điểm</th><th>Hạng tuần</th></tr></thead>
+          <tbody id="lb-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WEEKLY -->
+    <div id="page-weekly" class="page">
+      <div class="page-header"><div class="page-title">Điểm tuần</div><div class="page-sub">Chi tiết điểm theo từng tuần làm việc</div></div>
+      <div class="grid-2" style="margin-bottom:1rem">
+        <div class="card">
+          <div class="card-title">Xu hướng điểm theo tuần</div>
+          <canvas id="chart-weekly"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">Điểm chuyên cần vs Doanh thu</div>
+          <canvas id="chart-kpi-split"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Bảng điểm tuần chi tiết</div>
+        <div class="filter-bar" id="week-filters" style="margin-bottom:.75rem"></div>
+        <table class="tbl">
+          <thead><tr><th>Nhân viên</th><th>Chi nhánh</th><th>Tuần</th><th>Chuyên cần</th><th>Doanh thu</th><th>Sự vụ</th><th>Streak</th><th>Trừ</th><th>Tổng</th><th>Hạng</th></tr></thead>
+          <tbody id="week-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SPECIAL -->
+    <div id="page-special" class="page">
+      <div class="page-header"><div class="page-title">Điểm sự vụ</div><div class="page-sub">Ghi nhận đóng góp, sáng tạo, thành tích đặc biệt</div></div>
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.5rem" id="sv-stats"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Phân bổ theo nhóm sự vụ</div>
+          <canvas id="chart-sv-cat"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">Log điểm sự vụ</div>
+          <div class="filter-bar" id="sv-filters" style="margin-bottom:.5rem"></div>
+          <div id="sv-log"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATALOG -->
+    <div id="page-catalog" class="page">
+      <div class="page-header"><div class="page-title">Catalog đổi thưởng</div><div class="page-sub">Quỹ hiện vật ~100tr VND — Tỷ lệ: 1.000đ ≈ 2.000.000 VND</div></div>
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.5rem" id="cat-stats"></div>
+      <div class="grid-2">
+        <div class="card" style="grid-column:1/-1">
+          <div class="card-title">Danh sách quà <span class="card-badge">Cập nhật realtime</span></div>
+          <div class="filter-bar" id="cat-filters" style="margin-bottom:.75rem"></div>
+          <div id="catalog-list"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <div class="card-title" style="color:var(--gold)">Lịch sử đổi thưởng</div>
+        <table class="tbl">
+          <thead><tr><th>Ngày</th><th>Nhân viên</th><th>Chi nhánh</th><th>Quà</th><th>Điểm trừ</th><th>Số dư trước</th><th>Số dư sau</th><th>Trạng thái</th></tr></thead>
+          <tbody id="redeem-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="page-settings" class="page">
+      <div class="page-header"><div class="page-title">Nguồn dữ liệu</div><div class="page-sub">Quản lý kết nối Google Sheets</div></div>
+      <div class="card">
+        <div class="card-title">Thông tin kết nối hiện tại</div>
+        <div id="settings-info" style="font-size:13px;color:var(--txt2);line-height:2"></div>
+        <button class="btn-demo" style="margin-top:1rem;width:auto;padding:9px 20px" onclick="document.getElementById('setup-overlay').style.display='flex';document.getElementById('app').style.display='none'">Thay đổi nguồn dữ liệu</button>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <div class="card-title">Hướng dẫn Publish CSV từ Google Sheets</div>
+        <div style="font-size:13px;color:var(--txt2);line-height:2">
+          <strong style="color:var(--txt)">Bước 1:</strong> Mở Google Sheets → <strong style="color:var(--gold)">File → Share → Publish to web</strong><br>
+          <strong style="color:var(--txt)">Bước 2:</strong> Chọn từng sheet → chọn định dạng <strong style="color:var(--gold)">Comma-separated values (.csv)</strong><br>
+          <strong style="color:var(--txt)">Bước 3:</strong> Nhấn Publish → Copy link → Dashboard dùng link đó tự động<br>
+          <strong style="color:var(--txt)">Lưu ý:</strong> Dashboard tự fetch mỗi khi nhấn "Làm mới". Để tự động cập nhật, bật <strong style="color:var(--gold)">Automatically republish when changes are made</strong> trong Google Sheets.
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+let CONFIG = {
+  sheetId: '', sheets: { data:'_DATA_CA', week:'ĐIỂM_TUẦN', lb:'LEADERBOARD', sv:'ĐIỂM_SỰ_VỤ', sum:'_SUMMARY_THÁNG', cat:'CATALOG_ĐỔI_THƯỞNG' }
+};
+let DATA = { lb:[], week:[], sv:[], cat:[], catLog:[], sum:[] };
+let CHARTS = {};
+const BRANCH_COLORS = {
+  'Stadium':'#5b9cf6','Tây Sơn':'#2dd4a0','LL Quân':'#8b7cf8',
+  'Trần Vỹ':'#f07060','TQ Hoàn':'#f5c842','Chiến Thắng':'#fb923c'
+};
+const CAT_COLORS = {
+  'Voucher':'#2dd4a0','Phụ kiện':'#5b9cf6','Điện tử':'#8b7cf8',
+  'Trải nghiệm':'#f07060','Điện thoại':'#f5c842','Máy tính':'#fb923c'
+};
+const SV_COLORS = {
+  'Sáng kiến':'#8b7cf8','Đào tạo':'#5b9cf6','Khách hàng':'#2dd4a0',
+  'Thành tích':'#f5c842','Cộng đồng':'#f07060'
+};
+
+// ── DEMO DATA ──────────────────────────────────────────────────────────────
+function getDemoData() {
+  DATA.lb = [
+    {rank:1,name:'Hoàng Văn E',branch:'TQ Hoàn',level:'Staff',pts:85,grade:'Xuất sắc'},
+    {rank:2,name:'Trần Thị B',branch:'Tây Sơn',level:'Staff',pts:78,grade:'Xuất sắc'},
+    {rank:3,name:'Nguyễn Văn A',branch:'Stadium',level:'Staff',pts:75,grade:'Tốt'},
+    {rank:4,name:'Lê Văn C',branch:'LL Quân',level:'Shift Leader',pts:68,grade:'Tốt'},
+    {rank:5,name:'Phạm Thị D',branch:'Trần Vỹ',level:'Staff',pts:62,grade:'Tốt'},
+    {rank:6,name:'Vũ Thị F',branch:'Chiến Thắng',level:'Staff',pts:50,grade:'Trung bình'},
+    {rank:7,name:'Đặng Văn G',branch:'Stadium',level:'Staff',pts:48,grade:'Trung bình'},
+    {rank:8,name:'Bùi Thị H',branch:'Tây Sơn',level:'Staff',pts:44,grade:'Trung bình'},
+    {rank:9,name:'Ngô Văn I',branch:'TQ Hoàn',level:'Shift Leader',pts:41,grade:'Trung bình'},
+    {rank:10,name:'Đinh Thị K',branch:'Chiến Thắng',level:'Staff',pts:38,grade:'Cần cải thiện'},
+  ];
+  DATA.week = [
+    {name:'Stadium',name2:'Nguyễn Văn A',level:'Staff',week:'Tuần 1',attend:28,revenue:35,sv:0,streak:10,deduct:3,total:70,grade:'Tốt'},
+    {name:'Tây Sơn',name2:'Trần Thị B',level:'Staff',week:'Tuần 1',attend:30,revenue:40,sv:0,streak:0,deduct:0,total:70,grade:'Tốt'},
+    {name:'LL Quân',name2:'Lê Văn C',level:'Shift Leader',week:'Tuần 1',attend:25,revenue:30,sv:0,streak:10,deduct:7,total:58,grade:'Tốt'},
+    {name:'TQ Hoàn',name2:'Hoàng Văn E',level:'Staff',week:'Tuần 1',attend:30,revenue:45,sv:0,streak:15,deduct:5,total:85,grade:'Xuất sắc'},
+    {name:'Stadium',name2:'Nguyễn Văn A',level:'Staff',week:'Tuần 2',attend:30,revenue:42,sv:0,streak:25,deduct:0,total:97,grade:'Xuất sắc'},
+    {name:'Tây Sơn',name2:'Trần Thị B',level:'Staff',week:'Tuần 2',attend:28,revenue:38,sv:30,streak:10,deduct:3,total:103,grade:'Xuất sắc'},
+    {name:'TQ Hoàn',name2:'Hoàng Văn E',level:'Staff',week:'Tuần 2',attend:30,revenue:44,sv:200,streak:10,deduct:0,total:284,grade:'Xuất sắc'},
+  ];
+  DATA.sv = [
+    {date:'15/05/2025',branch:'Stadium',name:'Hoàng Văn E',group:'Sáng kiến',desc:'Đề xuất bố cục quầy check-in mới giảm thời gian chờ 30%',pts:200,approver:'Andrew',status:'Đã duyệt'},
+    {date:'18/05/2025',branch:'Tây Sơn',name:'Trần Thị B',group:'Khách hàng',desc:'Phản hồi 5 sao Google từ khách Nguyễn Minh T.',pts:30,approver:'SM Tây Sơn',status:'Đã duyệt'},
+    {date:'20/05/2025',branch:'LL Quân',name:'Lê Văn C',group:'Đào tạo',desc:'Mentor 2 nhân viên mới trong tuần đầu',pts:100,approver:'SM LL Quân',status:'Đã duyệt'},
+    {date:'22/05/2025',branch:'TQ Hoàn',name:'Nguyễn Thị X',group:'Thành tích',desc:'Nhân viên của tháng 5 — bình chọn nội bộ',pts:300,approver:'Andrew',status:'Đã duyệt'},
+    {date:'25/05/2025',branch:'Chiến Thắng',name:'Vũ Thị F',group:'Cộng đồng',desc:'Hỗ trợ sự kiện offline OGC ngoài ca làm',pts:80,approver:'Andrew',status:'Chờ duyệt'},
+  ];
+  DATA.cat = [
+    {id:1,name:'Voucher F&B OGC 200k',cat:'Voucher',price:200000,pts:100,stock:50,redeemed:0,note:'Dùng tại F&B trong chuỗi'},
+    {id:2,name:'Voucher F&B OGC 500k',cat:'Voucher',price:500000,pts:250,stock:30,redeemed:0,note:''},
+    {id:3,name:'Áo đồng phục OGC edition',cat:'Phụ kiện',price:300000,pts:150,stock:40,redeemed:0,note:'S/M/L/XL'},
+    {id:4,name:'Tai nghe bluetooth',cat:'Phụ kiện',price:400000,pts:200,stock:20,redeemed:0,note:''},
+    {id:5,name:'Sạc dự phòng 10.000mAh',cat:'Phụ kiện',price:350000,pts:175,stock:25,redeemed:0,note:''},
+    {id:6,name:'Chuột gaming không dây',cat:'Phụ kiện',price:600000,pts:300,stock:15,redeemed:1,note:''},
+    {id:7,name:'Bàn phím cơ compact',cat:'Phụ kiện',price:900000,pts:450,stock:10,redeemed:0,note:''},
+    {id:8,name:'Voucher mua sắm 1tr',cat:'Voucher',price:1000000,pts:500,stock:15,redeemed:0,note:'Shopee/Tiki/Lazada'},
+    {id:9,name:'Loa Bluetooth mini',cat:'Điện tử',price:1500000,pts:750,stock:8,redeemed:0,note:''},
+    {id:10,name:'Smartwatch phổ thông',cat:'Điện tử',price:2000000,pts:1000,stock:5,redeemed:0,note:''},
+    {id:11,name:'Voucher du lịch 3tr',cat:'Trải nghiệm',price:3000000,pts:1500,stock:5,redeemed:0,note:'Klook/Agoda'},
+    {id:12,name:'Samsung Galaxy A35',cat:'Điện thoại',price:7000000,pts:3500,stock:3,redeemed:0,note:'Kèm phụ kiện'},
+    {id:13,name:'iPhone 15 128GB',cat:'Điện thoại',price:22000000,pts:11000,stock:1,redeemed:0,note:'Màu theo tồn kho'},
+    {id:14,name:'Laptop Acer Aspire 14"',cat:'Máy tính',price:14000000,pts:7000,stock:1,redeemed:0,note:'RAM 16GB/SSD 512GB'},
+    {id:15,name:'iPad Gen 10 WiFi',cat:'Máy tính',price:10000000,pts:5000,stock:2,redeemed:0,note:'64GB, kèm bao da'},
+  ];
+  DATA.catLog = [
+    {date:'31/03/2025',name:'Hoàng Văn E',branch:'TQ Hoàn',item:'Chuột gaming không dây',pts:300,before:850,after:550,approver:'Andrew',status:'Hoàn tất'},
+    {date:'31/03/2025',name:'Trần Thị B',branch:'Tây Sơn',item:'Voucher F&B OGC 500k',pts:250,before:620,after:370,approver:'Andrew',status:'Hoàn tất'},
+    {date:'31/03/2025',name:'Lê Văn C',branch:'LL Quân',item:'Tai nghe bluetooth',pts:200,before:420,after:220,approver:'Andrew',status:'Hoàn tất'},
+  ];
+}
+
+// ── GOOGLE SHEETS FETCH ────────────────────────────────────────────────────
+function csvUrl(sheetName) {
+  return `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+}
+
+function parseCSV(text) {
+  const rows = []; let cur = ''; let inQ = false; let row = [];
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { row.push(cur.trim().replace(/^"|"$/g,'')); cur = ''; }
+    else if ((c === '\n' || c === '\r') && !inQ) {
+      if (cur || row.length) { row.push(cur.trim().replace(/^"|"$/g,'')); rows.push(row); cur = ''; row = []; }
+      if (c === '\r' && text[i+1] === '\n') i++;
+    } else cur += c;
+  }
+  if (cur || row.length) { row.push(cur.trim().replace(/^"|"$/g,'')); rows.push(row); }
+  return rows;
+}
+
+async function fetchSheet(sheetName) {
+  const url = csvUrl(sheetName);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return parseCSV(await res.text());
+}
+
+async function loadFromSheets() {
+  try {
+    // Leaderboard
+    const lbRaw = await fetchSheet(CONFIG.sheets.lb);
+    if (lbRaw.length > 2) {
+      DATA.lb = lbRaw.slice(2).filter(r => r[1]).map((r,i) => ({
+        rank: i+1, name: r[2]||'', branch: r[3]||'', level: r[4]||'', pts: parseFloat(r[5])||0, grade: r[6]||''
+      }));
+    }
+    // Weekly
+    const wkRaw = await fetchSheet(CONFIG.sheets.week);
+    if (wkRaw.length > 2) {
+      DATA.week = wkRaw.slice(2).filter(r => r[1]).map(r => ({
+        name: r[0]||'', name2: r[1]||'', level: r[2]||'', week: r[3]||'',
+        attend: parseFloat(r[4])||0, revenue: parseFloat(r[5])||0,
+        sv: parseFloat(r[7])||0, streak: parseFloat(r[6])||0,
+        deduct: parseFloat(r[7])||0, total: parseFloat(r[8])||0, grade: r[9]||''
+      }));
+    }
+    // SV
+    const svRaw = await fetchSheet(CONFIG.sheets.sv);
+    const svLogStart = svRaw.findIndex(r => r.join('').includes('Ngày ghi nhận'));
+    if (svLogStart > -1) {
+      DATA.sv = svRaw.slice(svLogStart+1).filter(r => r[1]).map(r => ({
+        date: r[1]||'', branch: r[2]||'', name: r[3]||'', group: r[4]||'',
+        desc: r[5]||'', pts: parseFloat(r[6])||0, approver: r[7]||'', status: r[9]||''
+      }));
+    }
+    // Catalog
+    const catRaw = await fetchSheet(CONFIG.sheets.cat);
+    const catStart = catRaw.findIndex(r => r.join('').includes('Tên quà'));
+    if (catStart > -1) {
+      DATA.cat = catRaw.slice(catStart+1).filter(r => r[2] && r[2] !== 'TỔNG GIÁ TRỊ CATALOG (ước tính)').map((r,i) => ({
+        id: i+1, name: r[2]||'', cat: r[3]||'',
+        price: parseFloat((r[4]||'').replace(/[^\d]/g,''))||0,
+        pts: parseFloat(r[5])||0, stock: parseFloat(r[6])||0,
+        redeemed: parseFloat(r[7])||0, note: r[9]||''
+      }));
+      const logStart = catRaw.findIndex(r => r.join('').includes('Ngày đổi'));
+      if (logStart > -1) {
+        DATA.catLog = catRaw.slice(logStart+1).filter(r => r[1]).map(r => ({
+          date: r[1]||'', name: r[2]||'', branch: r[3]||'', item: r[4]||'',
+          pts: parseFloat(r[5])||0, before: parseFloat(r[6])||0,
+          after: parseFloat(r[7])||0, approver: r[8]||'', status: r[9]||''
+        }));
+      }
+    }
+    return true;
+  } catch(e) {
+    console.error('Fetch error:', e);
+    return false;
+  }
+}
+
+// ── CONNECT ────────────────────────────────────────────────────────────────
+async function connectSheets() {
+  const id = document.getElementById('sheet-id').value.trim();
+  if (!id) { alert('Vui lòng nhập Sheet ID'); return; }
+  CONFIG.sheetId = id;
+  CONFIG.sheets = {
+    data: document.getElementById('s-data').value || '_DATA_CA',
+    week: document.getElementById('s-week').value || 'ĐIỂM_TUẦN',
+    lb:   document.getElementById('s-lb').value   || 'LEADERBOARD',
+    sv:   document.getElementById('s-sv').value   || 'ĐIỂM_SỰ_VỤ',
+    sum:  document.getElementById('s-sum').value  || '_SUMMARY_THÁNG',
+    cat:  document.getElementById('s-cat').value  || 'CATALOG_ĐỔI_THƯỞNG',
+  };
+  document.querySelector('.btn-load').textContent = 'Đang kết nối...';
+  const ok = await loadFromSheets();
+  if (!ok || DATA.lb.length === 0) {
+    alert('Không thể kết nối hoặc chưa Publish CSV. Vui lòng kiểm tra lại.\n\nDashboard sẽ dùng dữ liệu demo.');
+    getDemoData();
+  }
+  launchApp();
+}
+
+function loadDemo() { getDemoData(); CONFIG.sheetId = 'DEMO'; launchApp(); }
+
+function launchApp() {
+  document.getElementById('setup-overlay').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  renderAll();
+  document.getElementById('sync-time').textContent = 'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
+}
+
+async function refreshAll() {
+  if (CONFIG.sheetId && CONFIG.sheetId !== 'DEMO') {
+    await loadFromSheets();
+  }
+  destroyCharts();
+  renderAll();
+  document.getElementById('sync-time').textContent = 'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderOverview();
+  renderLeaderboard();
+  renderWeekly();
+  renderSpecial();
+  renderCatalog();
+  renderSettings();
+}
+
+function fmt(n) { return Number(n).toLocaleString('vi-VN'); }
+function fmtVND(n) { if (n >= 1e6) return (n/1e6).toFixed(1) + 'tr'; return fmt(n) + 'đ'; }
+
+function rankBadge(r) {
+  if (r===1) return `<span class="rank rank-1">#1</span>`;
+  if (r===2) return `<span class="rank rank-2">#2</span>`;
+  if (r===3) return `<span class="rank rank-3">#3</span>`;
+  return `<span class="rank rank-n">#${r}</span>`;
+}
+function gradePill(g) {
+  if (g==='Xuất sắc') return `<span class="pill pill-teal">${g}</span>`;
+  if (g==='Tốt') return `<span class="pill pill-blue">${g}</span>`;
+  if (g==='Trung bình') return `<span class="pill pill-amber">${g}</span>`;
+  return `<span class="pill pill-coral">${g}</span>`;
+}
+function statusPill(s) {
+  if (s==='Đã duyệt'||s==='Hoàn tất') return `<span class="pill pill-teal">${s}</span>`;
+  if (s==='Chờ duyệt') return `<span class="pill pill-amber">${s}</span>`;
+  return `<span class="pill pill-coral">${s}</span>`;
+}
+function branchDot(b) {
+  return `<span class="branch-dot" style="background:${BRANCH_COLORS[b]||'#888'};margin-right:5px"></span>`;
+}
+
+function renderOverview() {
+  const nvCount = [...new Set(DATA.lb.map(r=>r.name))].length;
+  document.getElementById('s-total-nv').textContent = nvCount || DATA.lb.length;
+  document.getElementById('overview-period').textContent = 'Dữ liệu cập nhật ' + new Date().toLocaleDateString('vi-VN');
+
+  const top = DATA.lb[0];
+  document.getElementById('s-top-pts').textContent = top ? top.pts : '—';
+  document.getElementById('s-top-name').textContent = top ? top.name + ' · ' + top.branch : '—';
+
+  const svApproved = DATA.sv.filter(s=>s.status==='Đã duyệt');
+  const svTotal = svApproved.reduce((a,b)=>a+b.pts,0);
+  document.getElementById('s-sv-pts').textContent = fmt(svTotal);
+  document.getElementById('s-sv-count').textContent = svApproved.length + ' hành động ghi nhận';
+
+  const remaining = DATA.cat.reduce((a,b)=>a+(b.stock-b.redeemed),0);
+  const remainVal = DATA.cat.reduce((a,b)=>a+b.price*(b.stock-b.redeemed),0);
+  document.getElementById('s-catalog-left').textContent = remaining;
+  document.getElementById('s-catalog-val').textContent = DATA.cat.length + ' loại / ' + fmtVND(remainVal);
+
+  // Top 5
+  const top5 = DATA.lb.slice(0,5);
+  const maxPts = top5[0]?.pts || 1;
+  document.getElementById('top5-body').innerHTML = top5.map(r => `
+    <tr>
+      <td>${rankBadge(r.rank)}</td>
+      <td><div style="font-weight:600">${r.name}</div></td>
+      <td>${branchDot(r.branch)}${r.branch}</td>
+      <td>
+        <div class="score-bar">
+          <div class="score-track"><div class="score-fill" style="width:${Math.round(r.pts/maxPts*100)}%;background:${r.rank<=3?'var(--gold)':'var(--teal)'}"></div></div>
+          <div class="score-num" style="color:${r.rank===1?'var(--gold)':'var(--txt)'}">${r.pts}</div>
+        </div>
+      </td>
+    </tr>`).join('');
+
+  // SV recent
+  document.getElementById('sv-recent').innerHTML = DATA.sv.slice(0,4).map(s => `
+    <div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:10px;align-items:flex-start">
+      <div style="width:8px;height:8px;border-radius:2px;background:${SV_COLORS[s.group]||'#888'};margin-top:5px;flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:600;color:var(--txt)">${s.name} <span style="color:var(--txt3);font-weight:400">· ${s.branch}</span></div>
+        <div style="font-size:11px;color:var(--txt2);margin-top:1px">${s.desc}</div>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--purple);flex-shrink:0">+${s.pts}</div>
+    </div>`).join('') || '<div class="empty"><div class="empty-icon">📋</div>Chưa có dữ liệu sự vụ</div>';
+
+  // Chart branch avg
+  const branches = [...new Set(DATA.lb.map(r=>r.branch))];
+  const branchAvg = branches.map(b => {
+    const pts = DATA.lb.filter(r=>r.branch===b).map(r=>r.pts);
+    return Math.round(pts.reduce((a,c)=>a+c,0)/pts.length);
+  });
+  renderChart('chart-branch', 'bar', branches, branchAvg, branches.map(b=>BRANCH_COLORS[b]||'#888'));
+
+  // Chart rank donut
+  const grades = ['Xuất sắc','Tốt','Trung bình','Cần cải thiện'];
+  const gradeCnt = grades.map(g => DATA.lb.filter(r=>r.grade===g).length);
+  renderChart('chart-rank', 'doughnut', grades, gradeCnt, ['#2dd4a0','#5b9cf6','#fbbf24','#f07060']);
+}
+
+function renderLeaderboard() {
+  const branches = ['Tất cả', ...new Set(DATA.lb.map(r=>r.branch))];
+  document.getElementById('lb-filters').innerHTML = branches.map((b,i) =>
+    `<button class="filter-btn${i===0?' active':''}" onclick="filterLB('${b}',this)">${b}</button>`
+  ).join('');
+  renderLBTable('Tất cả');
+}
+
+function filterLB(branch, btn) {
+  document.querySelectorAll('#lb-filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLBTable(branch);
+}
+
+function renderLBTable(branch) {
+  const rows = branch==='Tất cả' ? DATA.lb : DATA.lb.filter(r=>r.branch===branch);
+  document.getElementById('lb-body').innerHTML = rows.map((r,i) => `
+    <tr>
+      <td>${rankBadge(r.rank||i+1)}</td>
+      <td><div style="font-weight:600">${r.name}</div><div style="font-size:11px;color:var(--txt3)">${r.level}</div></td>
+      <td>${branchDot(r.branch)}${r.branch}</td>
+      <td><span style="color:var(--txt2);font-size:12px">${r.level}</span></td>
+      <td>
+        <div class="score-bar">
+          <div class="score-track"><div class="score-fill" style="width:${Math.round((r.pts||0)/((DATA.lb[0]?.pts)||1)*100)}%;background:${i===0?'var(--gold)':i===1?'#b0b8cc':i===2?'#c8825a':'var(--teal)'}"></div></div>
+          <div class="score-num" style="color:${i<3?'var(--gold)':'var(--txt)'}">${r.pts}</div>
+        </div>
+      </td>
+      <td>${gradePill(r.grade)}</td>
+    </tr>`).join('') || '<tr><td colspan="6"><div class="empty">Không có dữ liệu</div></td></tr>';
+}
+
+function renderWeekly() {
+  const weeks = [...new Set(DATA.week.map(r=>r.week))];
+  document.getElementById('week-filters').innerHTML = ['Tất cả',...weeks].map((w,i)=>
+    `<button class="filter-btn${i===0?' active':''}" onclick="filterWeek('${w}',this)">${w}</button>`
+  ).join('');
+  renderWeekTable('Tất cả');
+
+  // Chart weekly trend
+  const weeklyAvg = weeks.map(w => {
+    const pts = DATA.week.filter(r=>r.week===w).map(r=>r.total);
+    return pts.length ? Math.round(pts.reduce((a,c)=>a+c,0)/pts.length) : 0;
+  });
+  renderChart('chart-weekly','line',weeks,weeklyAvg,['#f5c842']);
+
+  // KPI split
+  const names = [...new Set(DATA.week.map(r=>r.name2))].slice(0,6);
+  const attends = names.map(n => Math.round(DATA.week.filter(r=>r.name2===n).reduce((a,b)=>a+b.attend,0)/Math.max(1,DATA.week.filter(r=>r.name2===n).length)));
+  const revenues = names.map(n => Math.round(DATA.week.filter(r=>r.name2===n).reduce((a,b)=>a+b.revenue,0)/Math.max(1,DATA.week.filter(r=>r.name2===n).length)));
+  if (CHARTS['chart-kpi-split']) CHARTS['chart-kpi-split'].destroy();
+  const ctx = document.getElementById('chart-kpi-split')?.getContext('2d');
+  if (ctx) {
+    CHARTS['chart-kpi-split'] = new Chart(ctx, {
+      type: 'bar',
+      data: { labels: names, datasets: [
+        { label:'Chuyên cần', data: attends, backgroundColor:'rgba(45,212,160,0.7)', borderRadius:4 },
+        { label:'Doanh thu',  data: revenues, backgroundColor:'rgba(245,200,66,0.7)', borderRadius:4 },
+      ]},
+      options: chartOpts({ stacked: false })
+    });
+  }
+}
+
+function filterWeek(week, btn) {
+  document.querySelectorAll('#week-filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWeekTable(week);
+}
+function renderWeekTable(week) {
+  const rows = week==='Tất cả' ? DATA.week : DATA.week.filter(r=>r.week===week);
+  document.getElementById('week-body').innerHTML = rows.map(r => `
+    <tr>
+      <td><div style="font-weight:600">${r.name2}</div></td>
+      <td>${branchDot(r.name||r.branch)}${r.name||r.branch}</td>
+      <td><span style="color:var(--txt2)">${r.week}</span></td>
+      <td style="color:var(--teal)">${r.attend}</td>
+      <td style="color:var(--gold)">${r.revenue}</td>
+      <td style="color:var(--purple)">${r.sv||0}</td>
+      <td style="color:var(--green)">${r.streak||0}</td>
+      <td style="color:var(--coral)">${r.deduct||0}</td>
+      <td><strong style="font-family:'Space Mono',monospace;color:var(--txt)">${r.total}</strong></td>
+      <td>${gradePill(r.grade)}</td>
+    </tr>`).join('') || '<tr><td colspan="10"><div class="empty">Không có dữ liệu</div></td></tr>';
+}
+
+function renderSpecial() {
+  const approved = DATA.sv.filter(s=>s.status==='Đã duyệt');
+  const pending  = DATA.sv.filter(s=>s.status==='Chờ duyệt');
+  const totalPts = approved.reduce((a,b)=>a+b.pts,0);
+  document.getElementById('sv-stats').innerHTML = [
+    {label:'Tổng điểm đã duyệt',val:fmt(totalPts),color:'var(--purple)'},
+    {label:'Hành động được ghi nhận',val:approved.length,color:'var(--teal)'},
+    {label:'Chờ phê duyệt',val:pending.length,color:'var(--amber)'},
+  ].map(s=>`<div class="stat-card"><div class="stat-label">${s.label}</div><div class="stat-val" style="color:${s.color}">${s.val}</div></div>`).join('');
+
+  // Chart donut by group
+  const groups = [...new Set(DATA.sv.map(r=>r.group))];
+  const groupPts = groups.map(g => DATA.sv.filter(r=>r.group===g).reduce((a,b)=>a+b.pts,0));
+  renderChart('chart-sv-cat','doughnut',groups,groupPts,groups.map(g=>SV_COLORS[g]||'#888'));
+
+  // Filters
+  const svGroups = ['Tất cả',...new Set(DATA.sv.map(r=>r.group))];
+  document.getElementById('sv-filters').innerHTML = svGroups.map((g,i)=>
+    `<button class="filter-btn${i===0?' active':''}" onclick="filterSV('${g}',this)">${g}</button>`
+  ).join('');
+  renderSVLog('Tất cả');
+}
+
+function filterSV(group, btn) {
+  document.querySelectorAll('#sv-filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSVLog(group);
+}
+function renderSVLog(group) {
+  const rows = group==='Tất cả' ? DATA.sv : DATA.sv.filter(r=>r.group===group);
+  document.getElementById('sv-log').innerHTML = rows.map(r => `
+    <div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:flex-start">
+      <div style="width:8px;height:8px;border-radius:2px;background:${SV_COLORS[r.group]||'#888'};margin-top:5px;flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <span style="font-size:12px;font-weight:600">${r.name}</span>
+          <span style="font-size:11px;color:var(--txt3)">${r.branch} · ${r.date}</span>
+        </div>
+        <div style="font-size:12px;color:var(--txt2)">${r.desc}</div>
+        <div style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap">
+          <span class="pill pill-purple">${r.group}</span>
+          ${statusPill(r.status)}
+          <span style="font-size:11px;color:var(--txt3)">Duyệt: ${r.approver}</span>
+        </div>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-weight:700;font-size:14px;color:var(--purple);flex-shrink:0">+${fmt(r.pts)}</div>
+    </div>`).join('') || '<div class="empty"><div class="empty-icon">✨</div>Không có dữ liệu</div>';
+}
+
+function renderCatalog() {
+  const totalItems = DATA.cat.reduce((a,b)=>a+b.stock,0);
+  const remaining  = DATA.cat.reduce((a,b)=>a+(b.stock-b.redeemed),0);
+  const totalVal   = DATA.cat.reduce((a,b)=>a+b.price*b.stock,0);
+  document.getElementById('cat-stats').innerHTML = [
+    {label:'Tổng giá trị catalog',val:fmtVND(totalVal),color:'var(--gold)'},
+    {label:'Tổng số lượng quà',val:totalItems + ' phần',color:'var(--teal)'},
+    {label:'Còn lại trong kho',val:remaining + ' phần',color:'var(--blue)'},
+  ].map(s=>`<div class="stat-card"><div class="stat-label">${s.label}</div><div class="stat-val" style="color:${s.color}">${s.val}</div></div>`).join('');
+
+  const cats = ['Tất cả',...new Set(DATA.cat.map(r=>r.cat))];
+  document.getElementById('cat-filters').innerHTML = cats.map((c,i)=>
+    `<button class="filter-btn${i===0?' active':''}" onclick="filterCat('${c}',this)">${c}</button>`
+  ).join('');
+  renderCatalogList('Tất cả');
+
+  document.getElementById('redeem-body').innerHTML = DATA.catLog.map(r=>`
+    <tr>
+      <td style="color:var(--txt3)">${r.date}</td>
+      <td><strong>${r.name}</strong></td>
+      <td>${branchDot(r.branch)}${r.branch}</td>
+      <td>${r.item}</td>
+      <td style="color:var(--coral);font-family:'Space Mono',monospace">-${fmt(r.pts)}</td>
+      <td style="color:var(--txt2)">${fmt(r.before)}</td>
+      <td style="color:var(--teal);font-weight:600">${fmt(r.after)}</td>
+      <td style="color:var(--txt3);font-size:12px">${r.approver}</td>
+      <td>${statusPill(r.status)}</td>
+    </tr>`).join('') || '<tr><td colspan="9"><div class="empty">Chưa có giao dịch đổi thưởng</div></td></tr>';
+}
+
+function filterCat(cat, btn) {
+  document.querySelectorAll('#cat-filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCatalogList(cat);
+}
+function renderCatalogList(cat) {
+  const items = cat==='Tất cả' ? DATA.cat : DATA.cat.filter(r=>r.cat===cat);
+  document.getElementById('catalog-list').innerHTML = items.map(item => {
+    const rem = item.stock - item.redeemed;
+    const pct = Math.round(rem/Math.max(1,item.stock)*100);
+    return `
+    <div class="catalog-item">
+      <div class="catalog-left">
+        <div class="catalog-cat" style="background:${CAT_COLORS[item.cat]||'#888'}"></div>
+        <div>
+          <div class="catalog-name">${item.name}</div>
+          <div class="catalog-sub">
+            <span class="pill pill-${item.cat==='Voucher'?'teal':item.cat==='Phụ kiện'?'blue':item.cat==='Điện thoại'?'amber':item.cat==='Máy tính'?'coral':'purple'}" style="margin-right:6px">${item.cat}</span>
+            ${fmtVND(item.price)} ${item.note?'· '+item.note:''}
+          </div>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="catalog-pts">${fmt(item.pts)} điểm</div>
+        <div class="catalog-stock ${rem<=2?'stock-low':'stock-ok'}">Còn ${rem}/${item.stock} (${pct}%)</div>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty">Không có sản phẩm trong danh mục này</div>';
+}
+
+function renderSettings() {
+  document.getElementById('settings-info').innerHTML = `
+    <div>Sheet ID: <code style="font-family:'Space Mono',monospace;font-size:12px;background:var(--bg3);padding:2px 8px;border-radius:4px;color:var(--teal)">${CONFIG.sheetId||'DEMO'}</code></div>
+    <div>Sheet dữ liệu ca: <strong>${CONFIG.sheets.data}</strong></div>
+    <div>Sheet điểm tuần: <strong>${CONFIG.sheets.week}</strong></div>
+    <div>Sheet leaderboard: <strong>${CONFIG.sheets.lb}</strong></div>
+    <div>Sheet sự vụ: <strong>${CONFIG.sheets.sv}</strong></div>
+    <div>Sheet tổng tháng: <strong>${CONFIG.sheets.sum}</strong></div>
+    <div>Sheet catalog: <strong>${CONFIG.sheets.cat}</strong></div>
+    <div style="margin-top:.5rem;color:var(--teal)">Cập nhật lần cuối: ${new Date().toLocaleString('vi-VN')}</div>
+  `;
+}
+
+// ── CHARTS ─────────────────────────────────────────────────────────────────
+Chart.defaults.color = '#8b92a8';
+Chart.defaults.font.family = "'Be Vietnam Pro', sans-serif";
+Chart.defaults.font.size = 11;
+
+function chartOpts(extra={}) {
+  return {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: extra.legend !== false, labels: { color:'#8b92a8', boxWidth:10, padding:12 } },
+      tooltip: { backgroundColor:'#1c2030', titleColor:'#e8eaf0', bodyColor:'#8b92a8', borderColor:'rgba(255,255,255,0.1)', borderWidth:1, padding:10 }
+    },
+    scales: extra.stacked !== undefined ? {
+      x: { stacked: extra.stacked, grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#8b92a8'} },
+      y: { stacked: extra.stacked, grid:{color:'rgba(255,255,255,0.06)'}, ticks:{color:'#8b92a8'} }
+    } : undefined,
+    ...(extra.type !== 'doughnut' && {
+      scales: {
+        x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#8b92a8'} },
+        y: { grid:{color:'rgba(255,255,255,0.06)'}, ticks:{color:'#8b92a8'} }
+      }
+    })
+  };
+}
+
+function renderChart(id, type, labels, data, colors) {
+  if (CHARTS[id]) CHARTS[id].destroy();
+  const el = document.getElementById(id);
+  if (!el) return;
+  const ctx = el.getContext('2d');
+  const isDoughnut = type === 'doughnut';
+  CHARTS[id] = new Chart(ctx, {
+    type,
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: isDoughnut ? colors.map(c=>c+'cc') : colors.map(c=>c+'bb'),
+        borderColor: isDoughnut ? colors : colors,
+        borderWidth: isDoughnut ? 0 : 0,
+        borderRadius: isDoughnut ? 0 : 5,
+        tension: type==='line' ? 0.4 : 0,
+        fill: type==='line',
+        pointBackgroundColor: type==='line' ? colors[0] : undefined,
+        pointRadius: type==='line' ? 4 : undefined,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: isDoughnut ? '65%' : undefined,
+      plugins: {
+        legend: { display: isDoughnut, position:'bottom', labels:{color:'#8b92a8',boxWidth:10,padding:10,font:{size:11}} },
+        tooltip: { backgroundColor:'#1c2030', titleColor:'#e8eaf0', bodyColor:'#8b92a8', borderColor:'rgba(255,255,255,0.08)', borderWidth:1, padding:10 }
+      },
+      scales: isDoughnut ? undefined : {
+        x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#8b92a8',font:{size:10}} },
+        y: { grid:{color:'rgba(255,255,255,0.06)'}, ticks:{color:'#8b92a8',font:{size:10}} }
+      }
+    }
+  });
+}
+
+function destroyCharts() { Object.values(CHARTS).forEach(c=>c.destroy()); CHARTS={}; }
+
+// ── NAV ────────────────────────────────────────────────────────────────────
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
