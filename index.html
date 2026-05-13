@@ -378,7 +378,6 @@ let CHARTS = {};
 let IS_DEMO = false;
 // ── AUTO-CONNECT ON PAGE LOAD ──────────────────────────────────
 const AUTO_API_URL = 'https://script.google.com/macros/s/AKfycbzeRNyhF3euy_AqmmLmyFKuII05yA1_rzi6WYuDqKH4pdVdqoGoh4q4T8oyRhimxdZp/exec';
-
 window.addEventListener('load', function() {
   // Tự động kết nối nếu chưa có dữ liệu
   if (!localStorage.getItem('apiConnected')) {
@@ -408,7 +407,6 @@ async function autoConnect() {
     // Nếu tự động kết nối thất bại, hiển thị màn hình setup
   }
 }
-
 const BC = {'Stadium':'#5b9cf6','Tây Sơn':'#2dd4a0','LL Quân':'#8b7cf8','Trần Vỹ':'#f07060','TQ Hoàn':'#f5c842','Chiến Thắng':'#fb923c'};
 const CC = {'Voucher':'#2dd4a0','Phụ kiện':'#5b9cf6','Điện tử':'#8b7cf8','Trải nghiệm':'#f07060','Phát triển':'#4ade80','Điện thoại':'#f5c842','Máy tính':'#fb923c'};
 
