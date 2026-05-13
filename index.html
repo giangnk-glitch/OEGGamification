@@ -371,7 +371,7 @@ canvas{max-height:200px}
 
 <script>
 // ── STATE ──────────────────────────────────────────────────────
-let API_URL = '';
+let API_URL = 'https://script.google.com/macros/s/AKfycbzeRNyhF3euy_AqmmLmyFKuII05yA1_rzi6WYuDqKH4pdVdqoGoh4q4T8oyRhimxdZp/exec';
 let LAYER = 'all';
 let DATA = { weekNv:[], weekTc:[], lbNv:[], lbTc:[], summaryNv:[], summaryTc:[] };
 let CHARTS = {};
@@ -666,6 +666,7 @@ function goPg(id,el){
   const mode=LAYER==='all'?'':(' m-'+LAYER);
   el.className='ni act'+mode;
 }
+  
 </script>
 </body>
 </html>
