@@ -23,7 +23,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Be Vietnam Pro',sans-ser
 #setup{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto}
 .sc{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:2rem 2.5rem;max-width:660px;width:100%}
 .sc-logo{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem}
-.sc-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#5b9cf6,#2dd4a0);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-wei[...]
+.sc-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#5b9cf6,#2dd4a0);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-weight:700;font-size:14px;color:#000;flex-shrink:0}
 .sc-title{font-size:22px;font-weight:700;margin-bottom:6px}
 .sc-desc{color:var(--txt2);font-size:13px;margin-bottom:1.5rem;line-height:1.7}
 
@@ -40,14 +40,14 @@ body{background:var(--bg);color:var(--txt);font-family:'Be Vietnam Pro',sans-ser
 
 .url-field{display:flex;flex-direction:column;gap:4px;margin-top:8px}
 .url-field label{font-size:11px;font-weight:600;color:var(--txt2)}
-.url-input{background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:var(--r-sm);padding:9px 12px;color:var(--txt);font-family:'Be Vietnam Pro',sans-serif;font-size:13px;outline:n[...]
+.url-input{background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:var(--r-sm);padding:9px 12px;color:var(--txt);font-family:'Be Vietnam Pro',sans-serif;font-size:13px;outline:none;width:100%;transition:border-color .2s}
 .url-input:focus{border-color:var(--gold)}
 .url-input::placeholder{color:var(--txt3)}
 
-.btn-connect{width:100%;margin-top:1.25rem;padding:13px;background:var(--gold);color:#000;border:none;border-radius:var(--r-sm);font-family:'Be Vietnam Pro',sans-serif;font-size:15px;font-weight:700;c[...]
+.btn-connect{width:100%;margin-top:1.25rem;padding:13px;background:var(--gold);color:#000;border:none;border-radius:var(--r-sm);font-family:'Be Vietnam Pro',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-connect:hover{opacity:.88}
 .btn-connect:disabled{opacity:.5;cursor:not-allowed}
-.btn-demo{width:100%;margin-top:8px;padding:10px;background:transparent;color:var(--txt2);border:1px solid var(--border2);border-radius:var(--r-sm);font-family:'Be Vietnam Pro',sans-serif;font-size:13[...]
+.btn-demo{width:100%;margin-top:8px;padding:10px;background:transparent;color:var(--txt2);border:1px solid var(--border2);border-radius:var(--r-sm);font-family:'Be Vietnam Pro',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
 .btn-demo:hover{background:var(--bg3);color:var(--txt)}
 
 .err-box{background:rgba(240,112,96,.1);border:1px solid rgba(240,112,96,.3);border-radius:var(--r-sm);padding:.75rem 1rem;margin-top:.75rem;font-size:13px;color:var(--coral);display:none}
@@ -56,12 +56,12 @@ body{background:var(--bg);color:var(--txt);font-family:'Be Vietnam Pro',sans-ser
 #app{display:none;min-height:100vh}
 .sidebar{position:fixed;left:0;top:0;bottom:0;width:232px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50}
 .sb-head{padding:1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.sb-mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#5b9cf6,#2dd4a0);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-weig[...]
+.sb-mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#5b9cf6,#2dd4a0);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;color:#000;flex-shrink:0}
 .sb-name{font-size:14px;font-weight:700}
 .sb-sub{font-size:11px;color:var(--txt2)}
 
 .layer-toggle{margin:.875rem 1rem;display:flex;background:var(--bg3);border-radius:var(--r-sm);padding:3px;gap:2px}
-.lt{flex:1;padding:5px 4px;font-size:12px;font-weight:600;border:none;border-radius:5px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;transition:all .15s;color:var(--txt2);background:transpar[...]
+.lt{flex:1;padding:5px 4px;font-size:12px;font-weight:600;border:none;border-radius:5px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;transition:all .15s;color:var(--txt2);background:transparent}
 .lt.a-all{background:var(--bg2);color:var(--txt)}
 .lt.a-nv{background:var(--nv2);color:#fff}
 .lt.a-tc{background:var(--tc2);color:#fff}
@@ -124,13 +124,13 @@ body{background:var(--bg);color:var(--txt);font-family:'Be Vietnam Pro',sans-ser
 .pcl{background:rgba(240,112,96,.12);color:var(--coral)}
 
 .fb{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.875rem}
-.fb-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--txt2);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;font-family:'Be V[...]
+.fb-btn{padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--txt2);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;font-family:'Be Vietnam Pro',sans-serif}
 .fb-btn:hover{color:var(--txt)}
 .fb-btn.a{background:rgba(245,200,66,.1);border-color:var(--gold);color:var(--gold)}
 .fb-btn.a-nv{background:var(--nv-lt);border-color:var(--nv);color:var(--nv)}
 .fb-btn.a-tc{background:var(--tc-lt);border-color:var(--tc);color:var(--tc)}
 
-.rfbtn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r-sm);border:1px solid var(--border2);background:transparent;color:var(--txt2);font-size:12px;font-weight:600;cursor[...]
+.rfbtn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r-sm);border:1px solid var(--border2);background:transparent;color:var(--txt2);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Be Vietnam Pro',sans-serif}
 .rfbtn:hover{border-color:var(--nv);color:var(--nv)}
 
 .bdot{width:6px;height:6px;border-radius:2px;display:inline-block;margin-right:4px;flex-shrink:0}
@@ -239,15 +239,15 @@ canvas{max-height:200px}
   </div>
   <div class="nav">
     <div class="ns">Tổng quan</div>
-    <div class="ni act" id="ni-ov" onclick="goPg('ov',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" [...]
+    <div class="ni act" id="ni-ov" onclick="goPg('ov',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>Overview</div>
     <div class="ns">Thi đua</div>
-    <div class="ni" id="ni-lb" onclick="goPg('lb',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l1.5 3.5L13 5l-2.5 2.5.6 3.5L8 9.5 4.9 11l.6-3.5L3 5[...]
-    <div class="ni" id="ni-wk" onclick="goPg('wk',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1v[...]
-    <div class="ni" id="ni-ms" onclick="goPg('ms',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>Nhiệm [...]
+    <div class="ni" id="ni-lb" onclick="goPg('lb',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l1.5 3.5L13 5l-2.5 2.5.6 3.5L8 9.5 4.9 11l.6-3.5L3 5l3.5-.5z"/></svg>Leaderboard</div>
+    <div class="ni" id="ni-wk" onclick="goPg('wk',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>Điểm tuần</div>
+    <div class="ni" id="ni-ms" onclick="goPg('ms',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>Nhiệm vụ</div>
     <div class="ns">Thưởng</div>
-    <div class="ni" id="ni-ct" onclick="goPg('ct',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12l-1 8H3z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 01[...]
+    <div class="ni" id="ni-ct" onclick="goPg('ct',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12l-1 8H3z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>Catalog</div>
     <div class="ns">Cài đặt</div>
-    <div class="ni" id="ni-cfg" onclick="goPg('cfg',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 2v1.5M8 12.5V14M2 8h1.[...]
+    <div class="ni" id="ni-cfg" onclick="goPg('cfg',this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14"/></svg>Cài đặt</div>
   </div>
   <div class="sb-foot"><span class="sync-dot"></span><span id="st">Chưa đồng bộ</span></div>
 </nav>
@@ -258,7 +258,7 @@ canvas{max-height:200px}
 <div id="pg-ov" class="pg act">
   <div class="ph">
     <div><div class="pt">Overview</div><div class="ps" id="ov-sub">Toàn chuỗi</div></div>
-    <button class="rfbtn" onclick="refresh()"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7a6 6 0 106-6H5M5 1L3 3l2 2"/></svg>Làm [...]
+    <button class="rfbtn" onclick="refresh()"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7a6 6 0 106-6H5M5 1L3 3l2 2"/></svg>Làm mới</button>
   </div>
   <div class="sg" id="ov-stats"></div>
   <div class="g2">
@@ -266,8 +266,8 @@ canvas{max-height:200px}
     <div class="card"><div class="ct">Phân bổ hạng <span style="font-size:11px;color:var(--txt3)">Tháng</span></div><canvas id="c-grade"></canvas></div>
   </div>
   <div class="g2">
-    <div class="card"><div class="ct">Top 5 nhân viên <span class="pill pnv">Staff</span></div><table class="tbl"><thead><tr><th>#</th><th>Nhân viên</th><th>Chi nhánh</th><th>Điểm</th></tr></t[...]
-    <div class="card"><div class="ct">Top 5 Trưởng ca <span class="pill ptc">TC</span></div><table class="tbl"><thead><tr><th>#</th><th>Trưởng ca</th><th>Chi nhánh</th><th>GP</th></tr></thead><[...]
+    <div class="card"><div class="ct">Top 5 nhân viên <span class="pill pnv">Staff</span></div><table class="tbl"><thead><tr><th>#</th><th>Nhân viên</th><th>Chi nhánh</th><th>Điểm</th></tr></thead><tbody id="t5-nv"></tbody></table></div>
+    <div class="card"><div class="ct">Top 5 Trưởng ca <span class="pill ptc">TC</span></div><table class="tbl"><thead><tr><th>#</th><th>Trưởng ca</th><th>Chi nhánh</th><th>GP</th></tr></thead><tbody id="t5-tc"></tbody></table></div>
   </div>
 </div>
 
@@ -275,7 +275,7 @@ canvas{max-height:200px}
 <div id="pg-lb" class="pg">
   <div class="ph">
     <div><div class="pt">Leaderboard</div><div class="ps">Thi đua riêng từng layer</div></div>
-    <button class="rfbtn" onclick="refresh()"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7a6 6 0 106-6H5M5 1L3 3l2 2"/></svg>Làm [...]
+    <button class="rfbtn" onclick="refresh()"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7a6 6 0 106-6H5M5 1L3 3l2 2"/></svg>Làm mới</button>
   </div>
   <div id="lb-nv-wrap" class="card" style="margin-bottom:.75rem">
     <div class="ct">Nhân viên (Staff) <span class="pill pnv">Layer 1</span></div>
@@ -351,15 +351,15 @@ canvas{max-height:200px}
   <div class="card" style="margin-bottom:.75rem">
     <div class="ct">Kết nối hiện tại</div>
     <div id="cfg-info" style="font-size:13px;color:var(--txt2);line-height:2.1"></div>
-    <button class="btn-demo" style="margin-top:.875rem;width:auto;padding:8px 16px" onclick="document.getElementById('setup').style.display='flex';document.getElementById('app').style.display='none'">[...]
+    <button class="btn-demo" style="margin-top:.875rem;width:auto;padding:8px 16px" onclick="document.getElementById('setup').style.display='flex';document.getElementById('app').style.display='none'">Đổi nguồn dữ liệu</button>
   </div>
   <div class="card">
     <div class="ct">Hướng dẫn Apps Script</div>
     <div style="font-size:13px;color:var(--txt2);line-height:2.2">
       <strong style="color:var(--txt)">Bước 1:</strong> Mở Google Sheets → <strong style="color:var(--gold)">Extensions → Apps Script</strong><br>
-      <strong style="color:var(--txt)">Bước 2:</strong> Paste nội dung file <code style="background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--nv)">Code.gs</code> vào editor → Sa[...]
+      <strong style="color:var(--txt)">Bước 2:</strong> Paste nội dung file <code style="background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--nv)">Code.gs</code> vào editor → Save (Ctrl+S)<br>
       <strong style="color:var(--txt)">Bước 3:</strong> <strong style="color:var(--gold)">Deploy → New deployment → Web App</strong><br>
-      &nbsp;&nbsp;&nbsp;Execute as: <code style="background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--nv)">Me</code> &nbsp;·&nbsp; Who has access: <code style="background:var(--bg3);pa[...]
+      &nbsp;&nbsp;&nbsp;Execute as: <code style="background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--nv)">Me</code> &nbsp;·&nbsp; Who has access: <code style="background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--nv)">Anyone</code><br>
       <strong style="color:var(--txt)">Bước 4:</strong> Copy URL → Dán vào màn hình setup → Kết nối<br>
       <strong style="color:var(--txt)">Lưu ý:</strong> Mỗi lần sửa Code.gs cần <strong style="color:var(--gold)">Deploy → New deployment</strong> (không phải Manage existing)
     </div>
@@ -376,39 +376,6 @@ let LAYER = 'all';
 let DATA = { weekNv:[], weekTc:[], lbNv:[], lbTc:[], summaryNv:[], summaryTc:[] };
 let CHARTS = {};
 let IS_DEMO = false;
-
-// ── AUTO-CONNECT ON PAGE LOAD ──────────────────────────────────
-const AUTO_API_URL = 'https://script.google.com/macros/s/AKfycbzeRNyhF3euy_AqmmLmyFKuII05yA1_rzi6WYuDqKH4pdVdqoGoh4q4T8oyRhimxdZp/exec';
-
-window.addEventListener('load', function() {
-  // Tự động kết nối nếu chưa có dữ liệu
-  if (!localStorage.getItem('apiConnected')) {
-    autoConnect();
-  }
-});
-
-async function autoConnect() {
-  try {
-    const res = await fetch(AUTO_API_URL + '?sheet=all', { method: 'GET' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    if (json.error) throw new Error(json.error);
-
-    API_URL = AUTO_API_URL;
-    if (json.weekNv)  DATA.weekNv  = json.weekNv;
-    if (json.weekTc)  DATA.weekTc  = json.weekTc;
-    if (json.lbNv)    DATA.lbNv    = json.lbNv;
-    if (json.lbTc)    DATA.lbTc    = json.lbTc;
-    if (json.summaryNv) DATA.summaryNv = json.summaryNv;
-    if (json.summaryTc) DATA.summaryTc = json.summaryTc;
-
-    localStorage.setItem('apiConnected', 'true');
-    launch();
-  } catch(e) {
-    console.error('Auto-connect failed:', e);
-    // Nếu tự động kết nối thất bại, hiển thị màn hình setup
-  }
-}
 
 const BC = {'Stadium':'#5b9cf6','Tây Sơn':'#2dd4a0','LL Quân':'#8b7cf8','Trần Vỹ':'#f07060','TQ Hoàn':'#f5c842','Chiến Thắng':'#fb923c'};
 const CC = {'Voucher':'#2dd4a0','Phụ kiện':'#5b9cf6','Điện tử':'#8b7cf8','Trải nghiệm':'#f07060','Phát triển':'#4ade80','Điện thoại':'#f5c842','Máy tính':'#fb923c'};
@@ -465,11 +432,9 @@ async function connectAPI() {
     if (json.lbTc)    DATA.lbTc    = json.lbTc;
     if (json.summaryNv) DATA.summaryNv = json.summaryNv;
     if (json.summaryTc) DATA.summaryTc = json.summaryTc;
-    
-    localStorage.setItem('apiConnected', 'true');
     launch();
   } catch(e) {
-    btn.disabled = false; btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8h8M9 5l3 3-3 3"/></svg>Kết nối & tải [...]
+    btn.disabled = false; btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8h8M9 5l3 3-3 3"/></svg>Kết nối & tải dữ liệu';
     showErr('Lỗi kết nối: ' + e.message + '\n\nKiểm tra:\n• URL đúng không?\n• Apps Script đã deploy với "Anyone" chưa?\n• Script có lỗi không? (mở Apps Script → Logs)');
   }
 }
@@ -549,10 +514,10 @@ function renderOverview() {
   sg.style.gridTemplateColumns = `repeat(${Math.min(4,sg.children.length)},1fr)`;
 
   const maxN = DATA.lbNv[0]?.gp||1;
-  document.getElementById('t5-nv').innerHTML = DATA.lbNv.slice(0,5).map((r,i)=>`<tr><td>${rk(i+1)}</td><td><div style="font-weight:600">${r.name}</div><div style="font-size:11px;color:var(--txt3)">${r[...]
+  document.getElementById('t5-nv').innerHTML = DATA.lbNv.slice(0,5).map((r,i)=>`<tr><td>${rk(i+1)}</td><td><div style="font-weight:600">${r.name}</div><div style="font-size:11px;color:var(--txt3)">${r.level||''}</div></td><td>${bd(r.branch)}${r.branch}</td><td><div class="sbar"><div class="st"><div class="sf" style="width:${Math.round(r.gp/maxN*100)}%;background:${i<3?'var(--gold)':'var(--nv)'}"></div></div><div class="sn" style="color:${i<3?'var(--gold)':'var(--txt)'}">${r.gp}</div></div></td></tr>`).join('') || '<tr><td colspan="4"><div class="empty">Chưa có dữ liệu</div></td></tr>';
 
   const maxT = DATA.lbTc[0]?.gp||1;
-  document.getElementById('t5-tc').innerHTML = DATA.lbTc.slice(0,5).map((r,i)=>`<tr><td>${rk(i+1)}</td><td><div style="font-weight:600">${r.name}</div></td><td>${bd(r.branch)}${r.branch}</td><td><div [...]
+  document.getElementById('t5-tc').innerHTML = DATA.lbTc.slice(0,5).map((r,i)=>`<tr><td>${rk(i+1)}</td><td><div style="font-weight:600">${r.name}</div></td><td>${bd(r.branch)}${r.branch}</td><td><div class="sbar"><div class="st"><div class="sf" style="width:${Math.round(r.gp/maxT*100)}%;background:${i<3?'var(--gold)':'var(--tc)'}"></div></div><div class="sn" style="color:${i<3?'var(--gold)':'var(--txt)'}">${fmt(r.gp)}</div></div></td></tr>`).join('') || '<tr><td colspan="4"><div class="empty">Chưa có dữ liệu</div></td></tr>';
 
   const branches = [...new Set([...DATA.weekNv,...DATA.weekTc].map(r=>r.branch))];
   const src = LAYER==='tc'?DATA.weekTc:LAYER==='nv'?DATA.weekNv:[...DATA.weekNv,...DATA.weekTc];
@@ -579,9 +544,9 @@ function flb(l,br,btn){
   const rows=br==='Tất cả'?d:d.filter(r=>r.branch===br);
   const mx=rows[0]?.gp||1;
   if(l==='nv'){
-    document.getElementById('lb-nv').innerHTML=rows.map((r,i)=>`<tr><td>${rk(r.rank||i+1)}</td><td><div style="font-weight:600">${r.name}</div><div style="font-size:11px;color:var(--txt3)">${r.level||[...]
+    document.getElementById('lb-nv').innerHTML=rows.map((r,i)=>`<tr><td>${rk(r.rank||i+1)}</td><td><div style="font-weight:600">${r.name}</div><div style="font-size:11px;color:var(--txt3)">${r.level||''}</div></td><td>${bd(r.branch)}${r.branch}</td><td>${r.level||''}</td><td><div class="sbar"><div class="st"><div class="sf" style="width:${Math.round((r.gp||0)/mx*100)}%;background:${i<3?'var(--gold)':'var(--nv)'}"></div></div><div class="sn" style="color:${i<3?'var(--gold)':'var(--txt)'}">${r.gp||0}</div></div></td><td style="color:var(--txt2)">${r.streak||'—'}</td><td>${gp(r.grade)}</td></tr>`).join('')||'<tr><td colspan="7"><div class="empty">Không có dữ liệu</div></td></tr>';
   } else {
-    document.getElementById('lb-tc').innerHTML=rows.map((r,i)=>`<tr><td>${rk(r.rank||i+1)}</td><td><div style="font-weight:600">${r.name}</div></td><td>${bd(r.branch)}${r.branch}</td><td style="font-f[...]
+    document.getElementById('lb-tc').innerHTML=rows.map((r,i)=>`<tr><td>${rk(r.rank||i+1)}</td><td><div style="font-weight:600">${r.name}</div></td><td>${bd(r.branch)}${r.branch}</td><td style="font-family:'Space Mono',monospace;font-weight:700;color:var(--purple)">${fmt(r.gp||0)}</td><td style="color:var(--amber)">${fmt(r.gold||0)}</td><td style="color:var(--gold);font-size:12px">${r.title||'—'}</td><td>${gp(r.grade)}</td></tr>`).join('')||'<tr><td colspan="7"><div class="empty">Không có dữ liệu</div></td></tr>';
   }
 }
 
@@ -600,7 +565,7 @@ function fwk(l,w,btn){
   if(btn){document.querySelectorAll(`#fb-wk-${l} .fb-btn`).forEach(b=>b.className='fb-btn');btn.className='fb-btn a-'+l;}
   const d=l==='nv'?DATA.weekNv:DATA.weekTc;
   const rows=w==='Tất cả'?d:d.filter(r=>r.week===w);
-  document.getElementById('wk-'+l).innerHTML=rows.map(r=>`<tr><td><div style="font-weight:600">${r.name}</div></td><td>${bd(r.branch)}${r.branch}</td><td style="color:var(--txt2)">${r.week}</td><td st[...]
+  document.getElementById('wk-'+l).innerHTML=rows.map(r=>`<tr><td><div style="font-weight:600">${r.name}</div></td><td>${bd(r.branch)}${r.branch}</td><td style="color:var(--txt2)">${r.week}</td><td style="font-weight:600;color:var(--purple)">${r.gp}</td><td style="color:var(--amber)">${r.gold}</td><td>${gp(r.grade)}</td></tr>`).join('')||'<tr><td colspan="6"><div class="empty">Chưa có dữ liệu</div></td></tr>';
 }
 
 const NV_MS=[
@@ -643,12 +608,12 @@ const TC_MS=[
 ];
 
 function renderMissions() {
-  document.getElementById('mg-nv').innerHTML=NV_MS.map(m=>`<div class="mc mc-nv"><span class="mt" style="background:var(--nv-lt);color:var(--nv)">${m.g}</span><div class="mn">${m.name}</div><div class[...]
-  document.getElementById('mg-tc').innerHTML=TC_MS.map(m=>`<div class="mc mc-tc"><span class="mt" style="background:var(--tc-lt);color:var(--tc)">${m.g}</span><div class="mn">${m.name}</div><div class[...]
+  document.getElementById('mg-nv').innerHTML=NV_MS.map(m=>`<div class="mc mc-nv"><span class="mt" style="background:var(--nv-lt);color:var(--nv)">${m.g}</span><div class="mn">${m.name}</div><div class="md">${m.pr}</div><div class="mf"><div class="mr">${m.gp>0?`<span class="rp rp-g">+${m.gp}GP</span>`:''}${m.gold>0?`<span class="rp rp-gold">+${m.gold}G</span>`:''}</div><span class="mfq">${m.f}</span></div></div>`).join('');
+  document.getElementById('mg-tc').innerHTML=TC_MS.map(m=>`<div class="mc mc-tc"><span class="mt" style="background:var(--tc-lt);color:var(--tc)">${m.g}</span><div class="mn">${m.name}</div><div class="md">${m.pr}</div><div class="mf"><div class="mr">${m.gp>0?`<span class="rp rp-g">+${m.gp}GP</span>`:''}${m.gold>0?`<span class="rp rp-gold">+${m.gold}G</span>`:''}</div><span class="mfq">${m.f}</span></div></div>`).join('');
 }
 
-const CAT_NV=[{n:'Voucher F&B 200k',c:'Voucher',p:200000,g:100,s:50,r:0},{n:'Voucher F&B 500k',c:'Voucher',p:500000,g:250,s:30,r:0},{n:'Áo đồng phục OGC',c:'Phụ kiện',p:300000,g:150,s:40,r:0[...]
-const CAT_TC=[{n:'Voucher F&B 200k',c:'Voucher',p:200000,g:100,s:30,r:0},{n:'Voucher mua sắm 1tr',c:'Voucher',p:1000000,g:500,s:15,r:0},{n:'Áo đồng phục premium',c:'Phụ kiện',p:500000,g:25[...]
+const CAT_NV=[{n:'Voucher F&B 200k',c:'Voucher',p:200000,g:100,s:50,r:0},{n:'Voucher F&B 500k',c:'Voucher',p:500000,g:250,s:30,r:0},{n:'Áo đồng phục OGC',c:'Phụ kiện',p:300000,g:150,s:40,r:0},{n:'Tai nghe bluetooth',c:'Phụ kiện',p:400000,g:200,s:20,r:0},{n:'Chuột gaming không dây',c:'Phụ kiện',p:600000,g:300,s:15,r:1},{n:'Bàn phím cơ compact',c:'Phụ kiện',p:900000,g:450,s:10,r:0},{n:'Voucher mua sắm 1tr',c:'Voucher',p:1000000,g:500,s:15,r:0},{n:'Loa Bluetooth mini',c:'Điện tử',p:1500000,g:750,s:8,r:0},{n:'Smartwatch phổ thông',c:'Điện tử',p:2000000,g:1000,s:5,r:0},{n:'Voucher du lịch 3tr',c:'Trải nghiệm',p:3000000,g:1500,s:5,r:0},{n:'Samsung Galaxy A35',c:'Điện thoại',p:7000000,g:3500,s:3,r:0},{n:'iPhone 15 128GB',c:'Điện thoại',p:22000000,g:11000,s:1,r:0},{n:'Laptop Acer Aspire',c:'Máy tính',p:14000000,g:7000,s:1,r:0},{n:'iPad Gen 10 WiFi',c:'Máy tính',p:10000000,g:5000,s:2,r:0}];
+const CAT_TC=[{n:'Voucher F&B 200k',c:'Voucher',p:200000,g:100,s:30,r:0},{n:'Voucher mua sắm 1tr',c:'Voucher',p:1000000,g:500,s:15,r:0},{n:'Áo đồng phục premium',c:'Phụ kiện',p:500000,g:250,s:20,r:0},{n:'Tai nghe gaming không dây',c:'Phụ kiện',p:1200000,g:600,s:10,r:0},{n:'Chuột gaming + pad',c:'Phụ kiện',p:1500000,g:750,s:8,r:1},{n:'Bàn phím cơ mechanical',c:'Phụ kiện',p:1800000,g:900,s:6,r:0},{n:'Smartwatch phổ thông',c:'Điện tử',p:2000000,g:1000,s:5,r:0},{n:'Loa Bluetooth Sony/JBL',c:'Điện tử',p:2500000,g:1250,s:4,r:0},{n:'Voucher du lịch 5tr',c:'Trải nghiệm',p:5000000,g:2500,s:3,r:0},{n:'Khóa học quản lý',c:'Phát triển',p:3000000,g:1500,s:5,r:0},{n:'Samsung Galaxy A55',c:'Điện thoại',p:9000000,g:4500,s:3,r:0},{n:'iPhone 15 Plus 128GB',c:'Điện thoại',p:25000000,g:12500,s:1,r:0},{n:'Laptop ASUS VivoBook',c:'Máy tính',p:15000000,g:7500,s:1,r:0},{n:'iPad Air WiFi 128GB',c:'Máy tính',p:17000000,g:8500,s:1,r:0}];
 
 function renderCatalog() {
   const tNv=CAT_NV.reduce((a,b)=>a+b.p*b.s,0), rNv=CAT_NV.reduce((a,b)=>a+(b.s-b.r),0);
@@ -670,12 +635,12 @@ function fct(l,cat,btn){
   const items=cat==='Tất cả'?d:d.filter(r=>r.c===cat);
   document.getElementById('ct-'+l).innerHTML=items.map(item=>{
     const rem=item.s-item.r,pct=Math.round(rem/Math.max(1,item.s)*100),col=CC[item.c]||'#888';
-    return `<div class="ci"><div class="cil"><div class="cb" style="background:${col}"></div><div><div class="cn">${item.n}</div><div class="cs">${fmtV(item.p)} · ${item.c}</div></div></div><div styl[...]
+    return `<div class="ci"><div class="cil"><div class="cb" style="background:${col}"></div><div><div class="cn">${item.n}</div><div class="cs">${fmtV(item.p)} · ${item.c}</div></div></div><div style="text-align:right;flex-shrink:0"><div class="cp">${fmt(item.g)} đ</div><div class="cst ${rem<=2?'c-lo':'c-ok'}">Còn ${rem}/${item.s} (${pct}%)</div></div></div>`;
   }).join('')||'<div class="empty">Không có sản phẩm</div>';
 }
 
 function renderCfg() {
-  document.getElementById('cfg-info').innerHTML=`Nguồn: <strong style="color:var(--nv)">${IS_DEMO?'Demo data':API_URL||'Chưa kết nối'}</strong><br>Cập nhật lần cuối: ${new Date().toLoca[...]
+  document.getElementById('cfg-info').innerHTML=`Nguồn: <strong style="color:var(--nv)">${IS_DEMO?'Demo data':API_URL||'Chưa kết nối'}</strong><br>Cập nhật lần cuối: ${new Date().toLocaleString('vi-VN')}`;
 }
 
 // ── CHARTS ─────────────────────────────────────────────────────
@@ -686,9 +651,9 @@ function mkChart(id,type,labels,data,colors){
   const isDon=type==='doughnut';
   CHARTS[id]=new Chart(el.getContext('2d'),{
     type,
-    data:{labels,datasets:[{data,backgroundColor:colors.map(c=>c+'cc'),borderColor:colors,borderWidth:0,borderRadius:isDon?0:5,tension:type==='line'?.4:0,fill:type==='line',pointBackgroundColor:type==[...]
+    data:{labels,datasets:[{data,backgroundColor:colors.map(c=>c+'cc'),borderColor:colors,borderWidth:0,borderRadius:isDon?0:5,tension:type==='line'?.4:0,fill:type==='line',pointBackgroundColor:type==='line'?colors[0]:undefined,pointRadius:type==='line'?4:undefined}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:isDon?'65%':undefined,
-      plugins:{legend:{display:isDon,position:'bottom',labels:{color:'#8b92a8',boxWidth:9,padding:9,font:{size:11}}},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf0',bodyColor:'#8b92a8',borderC[...]
+      plugins:{legend:{display:isDon,position:'bottom',labels:{color:'#8b92a8',boxWidth:9,padding:9,font:{size:11}}},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf0',bodyColor:'#8b92a8',borderColor:'rgba(255,255,255,.08)',borderWidth:1,padding:9}},
       scales:isDon?undefined:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8b92a8',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#8b92a8',font:{size:10}}}}}
   });
 }
